@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Prediction</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f3f4f6;
+        }
+        h1 {
+            color: #4f46e5;
+            text-align: center;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        .input-group input {
+            flex: 1;
+        }
+        .input-group select {
+            width: 80px;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+        .result {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: #e53e3e;
+            background: #fed7d7;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Detailed Download Time Prediction</h1>
+    
+    <form method="POST">
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="speed">Internet Speed (Mbps):</label>
+            <input type="number" name="speed" id="speed" min="0.1" step="0.1" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="file_size">File Size:</label>
+            <div class="input-group">
+                <input type="number" name="file_size" id="file_size" min="0.1" step="0.1" required>
+                <select name="file_size_unit" id="file_size_unit">
+                    <option value="MB">MB</option>
+                    <option value="GB">GB</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="active_downloads">Active Downloads:</label>
+            <input type="number" name="active_downloads" id="active_downloads" min="1" value="1" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="device_type">Device Type:</label>
+            <select name="device_type" id="device_type">
+                <option value="Smartphone">Smartphone</option>
+                <option value="Tablet">Tablet</option>
+                <option value="PC">PC</option>
+                <option value="Laptop">Laptop</option>
+            </select>
+        </div>
+        
+        <button type="submit">Predict Download Time</button>
+    </form>
+
+    {% if predicted_time is not none %}
+    <div class="result">
+        <h2>Estimated Download Time:</h2>
+        {% if predicted_time > 60 %}
+            {% set minutes = (predicted_time / 60)|int %}
+            {% set seconds = (predicted_time % 60)|int %}
+            <p>{{ minutes }} minute{% if minutes != 1 %}s{% endif %} and {{ seconds }} second{% if seconds != 1 %}s{% endif %}</p>
+        {% else %}
+            <p>{{ predicted_time|int }} second{% if predicted_time|int != 1 %}s{% endif %}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('home') }}" class="back-link">← Back to Home</a>
+</body>
+</html>
